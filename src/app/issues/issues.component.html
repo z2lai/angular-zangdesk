@@ -1,0 +1,13 @@
+<div>
+  <ul>
+    <li *ngFor="let issue of issues">
+      <button
+        [class.selected]="issue.id === selectedIssue?.id"
+        (click)="selectIssue(issue)"
+      >
+        <span class="badge">{{ issue.id }}</span>
+        <span class="name">{{ issue.name }}</span>
+      </button>
+    </li>
+  </ul>
+</div>
