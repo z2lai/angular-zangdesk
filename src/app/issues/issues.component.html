@@ -10,4 +10,8 @@
       </button>
     </li>
   </ul>
+	<div *ngIf="selectedIssue">
+		<h2>Selected Issue:</h2>
+		<a routerLink="/issue/{{selectedIssue.id}}">{{selectedIssue.name}}</a>
+	</div>
 </div>
