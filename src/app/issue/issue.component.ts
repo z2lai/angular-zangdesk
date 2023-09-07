@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Issue } from '../issue';
-import { ISSUES } from '../mock-issues';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { IssueService } from '../issue.service';
 
 @Component({
   selector: 'zd-issue',
@@ -10,22 +10,22 @@ import { Location } from '@angular/common';
   styleUrls: ['./issue.component.css']
 })
 export class IssueComponent {
-  issues: Issue[] = ISSUES;
   issue?: Issue;
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
+    private issueService: IssueService
   ) { }
 
   ngOnInit(): void {
-    this.issue = this.getIssue();
+    this.getIssue();
   }
 
-  getIssue(): Issue | undefined {
+  getIssue(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const issue = this.issues.find((issue): boolean => issue.id === id);
-    return issue;
+    this.issueService.getIssue(id)
+      .subscribe(issue => this.issue = issue);
   }
 
   goBack(): void {
