@@ -8,7 +8,7 @@ import { IssueService } from '../issue.service';
   styleUrls: ['./issues.component.css']
 })
 export class IssuesComponent {
-  public issues?: Issue[];
+  public issues: Issue[] =[];
   public selectedIssue?: Issue;
 
   constructor(
@@ -16,11 +16,29 @@ export class IssuesComponent {
   ) { }
 
   ngOnInit(): void {
+    this.getIssues();
+  }
+
+  getIssues(): void {
     this.issueService.getIssues()
       .subscribe(issues => this.issues = issues);
   }
 
-  selectIssue(issue: Issue): void {
+  selectIssue(issue?: Issue): void {
     this.selectedIssue = issue;
+  }
+
+  addIssue(issueName: string): void {
+    issueName = issueName.trim();
+    if (!issueName) return;
+    
+    this.issueService.addIssue({ name: issueName } as Issue)
+      .subscribe(issue => this.issues.push(issue));
+  }
+
+  deleteSelectedIssue(issueId: number): void {
+    this.selectIssue();
+    this.issueService.deleteIssue(issueId)
+      .subscribe(() => this.getIssues());
   }
 }

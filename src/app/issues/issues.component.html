@@ -1,4 +1,7 @@
 <div>
+  <label for="new-issue-name">New Issue Name:</label>
+  <input id="new-issue-name" type="text" #newIssueName />
+  <button type="button" (click)="addIssue(newIssueName.value)">Add</button>
   <ul>
     <li *ngFor="let issue of issues">
       <button
@@ -13,5 +16,7 @@
 	<div *ngIf="selectedIssue">
 		<h2>Selected Issue:</h2>
 		<a routerLink="/issue/{{selectedIssue.id}}">{{selectedIssue.name}}</a>
+    <button type="button" class="delete" title="delete issue"
+      (click)="deleteSelectedIssue(selectedIssue.id)">x</button>
 	</div>
 </div>

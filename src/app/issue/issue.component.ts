@@ -28,6 +28,13 @@ export class IssueComponent {
       .subscribe(issue => this.issue = issue);
   }
 
+  save(): void {
+    if (this.issue) {
+      this.issueService.updateIssue(this.issue)
+        .subscribe(() => this.goBack());
+    }
+  }
+
   goBack(): void {
     this.location.back();
   }
