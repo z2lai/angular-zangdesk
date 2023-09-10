@@ -1,4 +1,7 @@
 <div>
+  <!-- <zd-issue-search (searchEvent)="issues = $event"></zd-issue-search> -->
+  <label for="issue-search">Search Issue:</label>
+  <input id="issue-search" type="text" #issueSearch (change)="getIssuesByName(issueSearch.value)" />
   <label for="new-issue-name">New Issue Name:</label>
   <input id="new-issue-name" type="text" #newIssueName />
   <button type="button" (click)="addIssue(newIssueName.value)">Add</button>

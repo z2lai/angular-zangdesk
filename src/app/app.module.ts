@@ -9,12 +9,14 @@ import { AppComponent } from './app.component';
 import { IssuesComponent } from './issues/issues.component';
 import { IssueComponent } from './issue/issue.component';
 import { InMemoryDataService } from './in-memory-data.service';
+import { IssueSearchComponent } from './issue-search/issue-search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     IssuesComponent,
-    IssueComponent
+    IssueComponent,
+    IssueSearchComponent
   ],
   imports: [
     BrowserModule,

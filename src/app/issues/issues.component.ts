@@ -8,8 +8,8 @@ import { IssueService } from '../issue.service';
   styleUrls: ['./issues.component.css']
 })
 export class IssuesComponent {
-  public issues: Issue[] =[];
-  public selectedIssue?: Issue;
+  issues: Issue[] =[];
+  selectedIssue?: Issue;
 
   constructor(
     private issueService: IssueService
@@ -22,6 +22,15 @@ export class IssuesComponent {
   getIssues(): void {
     this.issueService.getIssues()
       .subscribe(issues => this.issues = issues);
+  }
+
+  getIssuesByName(name: string) {
+    if (!name.trim()) {
+      this.getIssues();
+    } else {
+      this.issueService.searchIssuesByName(name)
+        .subscribe(issues => this.issues = issues);
+    }
   }
 
   selectIssue(issue?: Issue): void {

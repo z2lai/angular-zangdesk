@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { Issue } from './issue';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -37,5 +37,11 @@ export class IssueService {
   deleteIssue(id: number): Observable<Issue> {
     const url = `${this.issuesUrl}/${id}`
     return this.http.delete<Issue>(url);
+  }
+
+  searchIssuesByName(name: string): Observable<Issue[]> {
+      return this.http.get<Issue[]>(`${this.issuesUrl}/?name=${name}`).pipe(
+        tap(x => console.log(x))
+      );
   }
 }
