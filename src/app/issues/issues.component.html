@@ -6,7 +6,7 @@
   <input id="new-issue-name" type="text" #newIssueName />
   <button type="button" (click)="addIssue(newIssueName.value)">Add</button>
   <ul>
-    <li *ngFor="let issue of issues">
+    <li *ngFor="let issue of issues$ | async">
       <button
         [class.selected]="issue.id === selectedIssue?.id"
         (click)="selectIssue(issue)"

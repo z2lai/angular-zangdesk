@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Issue } from '../issue';
 import { IssueService } from '../issue.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'zd-issues',
@@ -8,7 +9,7 @@ import { IssueService } from '../issue.service';
   styleUrls: ['./issues.component.css']
 })
 export class IssuesComponent {
-  issues: Issue[] =[];
+  issues$!: Observable<Issue[]>;
   selectedIssue?: Issue;
 
   constructor(
@@ -20,16 +21,14 @@ export class IssuesComponent {
   }
 
   getIssues(): void {
-    this.issueService.getIssues()
-      .subscribe(issues => this.issues = issues);
+    this.issues$ = this.issueService.getIssues()
   }
 
   getIssuesByName(name: string) {
     if (!name.trim()) {
       this.getIssues();
     } else {
-      this.issueService.searchIssuesByName(name)
-        .subscribe(issues => this.issues = issues);
+      this.issues$ = this.issueService.searchIssuesByName(name)
     }
   }
 
@@ -42,7 +41,7 @@ export class IssuesComponent {
     if (!issueName) return;
     
     this.issueService.addIssue({ name: issueName } as Issue)
-      .subscribe(issue => this.issues.push(issue));
+    .subscribe(() => this.getIssues());
   }
 
   deleteSelectedIssue(issueId: number): void {
