@@ -6,15 +6,12 @@
   <input id="new-issue-name" type="text" #newIssueName />
   <button type="button" (click)="addIssue(newIssueName.value)">Add</button>
   <ul>
-    <li *ngFor="let issue of issues$ | async">
-      <button
-        [class.selected]="issue.id === selectedIssue?.id"
-        (click)="selectIssue(issue)"
-      >
-        <span class="badge">{{ issue.id }}</span>
-        <span class="name">{{ issue.name }}</span>
-      </button>
-    </li>
+    <zd-issues-list-tile 
+      *ngFor="let issue of issues$ | async"
+      [issue]="issue"
+      [active]="selectedIssue?.id === issue.id"
+      (select)="selectIssue(issue)">
+    </zd-issues-list-tile>
   </ul>
 	<div *ngIf="selectedIssue">
 		<h2>Selected Issue:</h2>
