@@ -9,19 +9,19 @@ import { Observable } from 'rxjs';
   styleUrls: ['./issues.component.css']
 })
 export class IssuesComponent {
-  issues$!: Observable<Issue[]>;
+  issues$!: Observable<Issue[]>; // TODO: Move possible shared state up to single application state class (store) in core layer
   selectedIssue?: Issue;
 
   constructor(
     private issueService: IssueService
   ) { }
 
-  ngOnInit(): void {
-    this.getIssues();
+  ngOnInit() {
+    this.issues$ = this.getIssues();
   }
 
-  getIssues(): void {
-    this.issues$ = this.issueService.getIssues()
+  getIssues() {
+    return this.issueService.getIssues()
   }
 
   getIssuesByName(name: string) {
@@ -32,21 +32,37 @@ export class IssuesComponent {
     }
   }
 
-  selectIssue(issue?: Issue): void {
-    this.selectedIssue = issue;
+  private updateIssueInList(issue: Issue) {
+    //TODO: Implement this method to be called for any optimistic updates to avoid waiting for API response
   }
 
-  addIssue(issueName: string): void {
-    issueName = issueName.trim();
-    if (!issueName) return;
-    
-    this.issueService.addIssue({ name: issueName } as Issue)
-    .subscribe(() => this.getIssues());
+  selectIssue(issue: Issue) {
+    this.selectedIssue = { ...issue };
   }
 
-  deleteSelectedIssue(issueId: number): void {
-    this.selectIssue();
+  addIssue(issue: Issue) {
+    issue.name = issue.name.trim(); //application logic stored in smart component instead of facade class
+    if (!issue.name) return;
+
+    this.issueService.addIssue(issue)
+      .subscribe(() => this.issues$ = this.getIssues());
+  }
+
+  saveSelectedIssue(issue: Issue) {
+    console.log(issue);
+    issue.name = issue.name.trim(); //application logic stored in smart component instead of facade class
+    if (!issue.name) return;
+
+    if (issue.id) { //application logic stored in smart component instead of facade class
+      this.issueService.updateIssue(issue)
+        .subscribe(() => this.issues$ = this.getIssues());
+    } else {
+      this.addIssue(issue);
+    }
+  }
+
+  deleteSelectedIssue(issueId: number) {
     this.issueService.deleteIssue(issueId)
-      .subscribe(() => this.getIssues());
+      .subscribe(() => this.issues$ = this.getIssues());
   }
 }

@@ -11,6 +11,7 @@ import { IssueComponent } from './issue/issue.component';
 import { InMemoryDataService } from './in-memory-data.service';
 import { IssueSearchComponent } from './issue-search/issue-search.component';
 import { IssuesListTileComponent } from './issues-list-tile/issues-list-tile.component';
+import { IssueEditComponent } from './issue-edit/issue-edit.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { IssuesListTileComponent } from './issues-list-tile/issues-list-tile.com
     IssuesComponent,
     IssueComponent,
     IssueSearchComponent,
-    IssuesListTileComponent
+    IssuesListTileComponent,
+    IssueEditComponent
   ],
   imports: [
     BrowserModule,

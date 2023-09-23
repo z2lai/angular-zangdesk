@@ -1,0 +1,32 @@
+<article class="card text-center">
+  <div class="card-header">Issue</div>
+  <div class="card-body">
+    <h2>{{ issue.name }}</h2>
+    <a routerLink="/issue/{{ issue.id }}">Details</a>
+		<p class="card-text">
+			<input
+				type="text"
+				[(ngModel)]="issue.description"
+				placeholder="Description"
+			/>
+		</p>
+    <button
+			*ngIf="issue.id"
+      type="button"
+      class="btn btn-secondary card-link"
+      title="delete issue"
+      (click)="delete(issue.id)"
+    >
+      Delete
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary card-link"
+      title="delete issue"
+      (click)="save(issue)"
+    >
+      {{issue.id ? 'Save' : 'Add'}}
+    </button>
+  </div>
+  <div class="card-footer text-muted">Last Updated 2 days ago</div>
+</article>

@@ -1,5 +1,5 @@
 <li>
-  <button [class.selected]="active" (click)="selectIssue(issue.id)">
+  <button [class.selected]="active" (click)="selectIssue(issue.id!)">
     <span class="badge">{{ issue.id }}</span>
     <span class="name">{{ issue.name }}</span>
   </button>
