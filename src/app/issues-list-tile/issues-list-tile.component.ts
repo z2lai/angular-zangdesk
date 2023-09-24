@@ -12,6 +12,10 @@ export class IssuesListTileComponent {
 
   @Output() select = new EventEmitter<number>;
 
+  constructor() {
+    console.log('IssueListTile Component Instantiated!');
+  }
+
   selectIssue(id: number) {
     this.select.emit(id);
   }

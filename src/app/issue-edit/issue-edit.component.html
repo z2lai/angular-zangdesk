@@ -3,15 +3,20 @@
   <div class="card-body">
     <h2>{{ issue.name }}</h2>
     <a routerLink="/issue/{{ issue.id }}">Details</a>
-		<p class="card-text">
-			<input
-				type="text"
-				[(ngModel)]="issue.description"
-				placeholder="Description"
-			/>
-		</p>
+    <p class="card-text">
+      <input
+        type="text"
+        [(ngModel)]="issue.name"
+        placeholder="Name"
+      />
+      <input
+        type="text"
+        [(ngModel)]="issue.description"
+        placeholder="Description"
+      />
+    </p>
     <button
-			*ngIf="issue.id"
+      *ngIf="issue.id"
       type="button"
       class="btn btn-secondary card-link"
       title="delete issue"
@@ -25,7 +30,7 @@
       title="delete issue"
       (click)="save(issue)"
     >
-      {{issue.id ? 'Save' : 'Add'}}
+      {{ issue.id ? "Save" : "Add" }}
     </button>
   </div>
   <div class="card-footer text-muted">Last Updated 2 days ago</div>

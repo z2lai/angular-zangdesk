@@ -10,11 +10,13 @@ import { Observable } from 'rxjs';
 })
 export class IssuesComponent {
   issues$!: Observable<Issue[]>; // TODO: Move possible shared state up to single application state class (store) in core layer
-  selectedIssue?: Issue;
+  selectedIssue?: Issue | null;
 
   constructor(
     private issueService: IssueService
-  ) { }
+  ) { 
+    console.log('Component Instantiated!');
+  }
 
   ngOnInit() {
     this.issues$ = this.getIssues();
@@ -63,6 +65,9 @@ export class IssuesComponent {
 
   deleteSelectedIssue(issueId: number) {
     this.issueService.deleteIssue(issueId)
-      .subscribe(() => this.issues$ = this.getIssues());
+      .subscribe(() => {
+        this.issues$ = this.getIssues();
+        this.selectedIssue = null;
+      });
   }
 }

@@ -12,6 +12,10 @@ export class IssueEditComponent {
   @Output() saveIssue = new EventEmitter<Issue>();
   @Output() deleteIssue = new EventEmitter<number>();
   
+  constructor() {
+    console.log('IssueEdit Component Instantiated!');
+  }
+
   save(issue: Issue) {
     console.log(issue);
     this.saveIssue.emit(issue);
