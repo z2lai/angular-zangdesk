@@ -17,11 +17,14 @@ export class IssueEditComponent {
   }
 
   save(issue: Issue) {
-    console.log(issue);
     this.saveIssue.emit(issue);
   }
 
   delete(id: number) {
     this.deleteIssue.emit(id);
+  }
+
+  ngOnInit() {
+    console.log('IssueEdit Component Initialized!');
   }
 }
