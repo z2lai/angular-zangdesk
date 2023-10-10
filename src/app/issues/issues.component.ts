@@ -4,9 +4,9 @@ import { IssueService } from '../issue.service';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
   combineLatestWith,
   map,
+  tap,
 } from 'rxjs';
 
 @Component({
@@ -26,11 +26,14 @@ export class IssuesComponent {
 
   selectedIssue$?: Observable<Issue | undefined> = this.selectedIssueId$.pipe(
     combineLatestWith(this.issues$),
+    tap(console.log),
     map(
       ([selectedIssueId, issues]: [number | undefined, Issue[]]):
         | Issue
-        | undefined =>
-        issues.find((issue: Issue) => issue.id === selectedIssueId)
+        | undefined => {
+          const selectedIssue = issues.find((issue: Issue) => issue.id === selectedIssueId)
+          return selectedIssue ? {...selectedIssue} : undefined;
+        }
     )
   );
 
