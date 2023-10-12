@@ -10,16 +10,14 @@
   <label for="new-issue-name">New Issue Name:</label>
   <!-- <input id="new-issue-name" type="text" #newIssueName />
   <button type="button" (click)="addIssue(newIssueName.value)">Add</button> -->
-  <menu aria-label="issues">
-    <zd-issues-list-tile
-      *ngFor="let issue of (issues$ | async)"
-      [issue]="issue"
-      [active]="selectedIssueId === issue.id"
-      (select)="selectIssue(issue)"
-    >
-    </zd-issues-list-tile>
-  </menu>
-  <section *ngIf="(selectedIssue$ | async) as selectedIssue">
-    <zd-issue-edit [issue]="selectedIssue" (saveIssue)="saveSelectedIssue($event)" (deleteIssue)="deleteSelectedIssue($event)"></zd-issue-edit>
+  <zd-issues-list [issues$]="issues$" [selectedIssueId]="selectedIssueId" (selectIssue)="onIssueSelect($event)">
+  </zd-issues-list>
+  <div style="text-align: center">selected Id: {{ selectedIssueId }}</div>
+  <section *ngIf="selectedIssue$ | async as selectedIssue">
+    <zd-issue-edit
+      [issue]="selectedIssue"
+      (saveIssue)="saveSelectedIssue($event)"
+      (deleteIssue)="deleteSelectedIssue($event)"
+    ></zd-issue-edit>
   </section>
 </div>

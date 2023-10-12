@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { IssueService } from '../issue.service';
 import { Observable } from 'rxjs';
 import { Issue } from '../issue';
@@ -6,7 +6,8 @@ import { Issue } from '../issue';
 @Component({
   selector: 'zd-issue-search',
   templateUrl: './issue-search.component.html',
-  styleUrls: ['./issue-search.component.css']
+  styleUrls: ['./issue-search.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssueSearchComponent {
   @Output() searchEvent = new EventEmitter<Issue[]>();

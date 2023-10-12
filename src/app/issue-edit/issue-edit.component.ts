@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Issue } from '../issue';
 
 @Component({
   selector: 'zd-issue-edit',
   templateUrl: './issue-edit.component.html',
-  styleUrls: ['./issue-edit.component.css']
+  styleUrls: ['./issue-edit.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssueEditComponent {
   @Input() issue!: Issue;

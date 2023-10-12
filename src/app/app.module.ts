@@ -10,7 +10,7 @@ import { IssuesComponent } from './issues/issues.component';
 import { IssueComponent } from './issue/issue.component';
 import { InMemoryDataService } from './in-memory-data.service';
 import { IssueSearchComponent } from './issue-search/issue-search.component';
-import { IssuesListTileComponent } from './issues-list-tile/issues-list-tile.component';
+import { IssuesListComponent } from './issues-list/issues-list.component';
 import { IssueEditComponent } from './issue-edit/issue-edit.component';
 
 @NgModule({
@@ -19,7 +19,7 @@ import { IssueEditComponent } from './issue-edit/issue-edit.component';
     IssuesComponent,
     IssueComponent,
     IssueSearchComponent,
-    IssuesListTileComponent,
+    IssuesListComponent,
     IssueEditComponent
   ],
   imports: [

@@ -1,0 +1,11 @@
+<menu aria-label="issues">
+  <li *ngFor="let issue of issues$ | async">
+    <button
+      [ngClass]="{ active: selectedIssueId === issue.id }"
+      (click)="select(issue)"
+    >
+      <span class="badge">{{ issue.id }}</span>
+      <span class="name">{{ issue.name }}</span>
+    </button>
+  </li>
+</menu>

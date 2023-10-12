@@ -1,18 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Issue } from '../issue';
 import { IssueService } from '../issue.service';
-import {
-  BehaviorSubject,
-  Observable,
-  combineLatestWith,
-  map,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, combineLatestWith, map, tap } from 'rxjs';
 
 @Component({
   selector: 'zd-issues',
   templateUrl: './issues.component.html',
   styleUrls: ['./issues.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IssuesComponent {
   private _issues$ = new BehaviorSubject<Issue[]>([]);
@@ -26,15 +21,17 @@ export class IssuesComponent {
 
   selectedIssue$?: Observable<Issue | undefined> = this.selectedIssueId$.pipe(
     combineLatestWith(this.issues$),
-    tap(console.log),
     map(
       ([selectedIssueId, issues]: [number | undefined, Issue[]]):
         | Issue
         | undefined => {
-          const selectedIssue = issues.find((issue: Issue) => issue.id === selectedIssueId)
-          return selectedIssue ? {...selectedIssue} : undefined;
-        }
-    )
+        const selectedIssue = issues.find(
+          (issue: Issue) => issue.id === selectedIssueId
+        );
+        return selectedIssue ? { ...selectedIssue } : undefined;
+      }
+    ),
+    tap(selectedIssue => console.log('Selected Issue:', selectedIssue))
   );
 
   constructor(private issueService: IssueService) {
@@ -64,7 +61,7 @@ export class IssuesComponent {
     // Can include logic to rollback optimistic update if API response returns error
   }
 
-  selectIssue(issue: Issue) {
+  onIssueSelect(issue: Issue) {
     this.selectedIssueId$.next(issue.id);
   }
 

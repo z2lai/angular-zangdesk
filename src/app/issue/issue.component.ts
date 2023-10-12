@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Issue } from '../issue';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -7,7 +7,8 @@ import { IssueService } from '../issue.service';
 @Component({
   selector: 'zd-issue',
   templateUrl: './issue.component.html',
-  styleUrls: ['./issue.component.css']
+  styleUrls: ['./issue.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssueComponent {
   issue?: Issue;
