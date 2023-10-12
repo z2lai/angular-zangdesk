@@ -77,9 +77,6 @@ export class IssuesComponent {
     if (!issue.name) return;
 
     if (issue.id) {
-      //TODO: Currently, all issueListTile components re-render unnecessarily due to new issues reference (binded in template with issues$ and async pipe)
-      // being emitted everytime this.getIssues is called.
-      // This can be optimized by passing the issues$ observable as an input parameter into a issuesList component with onPush change detection
       this.issueService.updateIssue(issue).subscribe(() => this.getIssues());
     } else {
       this.addIssue(issue);

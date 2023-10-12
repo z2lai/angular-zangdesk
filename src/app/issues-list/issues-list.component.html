@@ -1,5 +1,5 @@
 <menu aria-label="issues">
-  <li *ngFor="let issue of issues$ | async">
+  <li *ngFor="let issue of issues$ | async; trackBy: identifyIssue">
     <button
       [ngClass]="{ active: selectedIssueId === issue.id }"
       (click)="select(issue)"

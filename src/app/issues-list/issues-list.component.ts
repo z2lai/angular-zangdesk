@@ -21,4 +21,9 @@ export class IssuesListComponent {
   select(issue: Issue) {
     this.selectIssue.emit(issue);
   }
+
+  //TODO: This method can be moved to the Issues class for DDD approach
+  identifyIssue(index: number, issue: Issue){
+    return issue.id; 
+ }
 }
