@@ -11,7 +11,7 @@ export class IssueEditComponent {
   @Input() issue!: Issue;
 
   @Output() saveIssue = new EventEmitter<Issue>();
-  @Output() deleteIssue = new EventEmitter<number>();
+  @Output() deleteIssue = new EventEmitter<Issue>();
   
   constructor() {
     console.log('IssueEdit Component Instantiated!');
@@ -21,8 +21,8 @@ export class IssueEditComponent {
     this.saveIssue.emit(issue);
   }
 
-  delete(id: number) {
-    this.deleteIssue.emit(id);
+  delete(issue: Issue) {
+    this.deleteIssue.emit(issue);
   }
 
   ngOnInit() {

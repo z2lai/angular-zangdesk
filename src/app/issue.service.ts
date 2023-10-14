@@ -47,11 +47,20 @@ export class IssueService {
   }
 
   deleteIssue(id: number): Observable<Issue> {
-    const url = `${this.issuesUrl}/${id}`
-    return this.http.delete<Issue>(url).pipe(
-      tap(_ => console.log(`deleted Issue id=${id}`)),
-      catchError(this.handleError<Issue>('deleteIssue'))
-    );
+    // Simulating 50 percent chance of throwing an error instead of calling the API
+    if (Math.random() >= 0.5) {
+      return new Observable(function subscribe(subscriber) {
+        setTimeout(() => {
+          subscriber.error(new Error(`Simulated delete issue error for id: ${id}`));
+        }, 1000);
+      });
+    } else {
+      const url = `${this.issuesUrl}/${id}`
+      return this.http.delete<Issue>(url).pipe(
+        tap(_ => console.log(`deleted Issue id=${id}`)),
+        catchError(this.handleError<Issue>('deleteIssue'))
+      );
+    }
   }
 
   searchIssuesByName(name: string): Observable<Issue[]> {

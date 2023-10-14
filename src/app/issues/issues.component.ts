@@ -12,6 +12,9 @@ import { BehaviorSubject, Observable, combineLatestWith, map, tap } from 'rxjs';
 export class IssuesComponent {
   private _issues$ = new BehaviorSubject<Issue[]>([]);
   issues$: Observable<Issue[]> = this._issues$.asObservable();
+  get issues() {
+    return this._issues$.getValue();
+  }
 
   private selectedIssueId$ = new BehaviorSubject<number | undefined>(undefined);
   // getter to retrieve selectedIssueId easily without having to subscribe to an observable
@@ -72,20 +75,31 @@ export class IssuesComponent {
     this.issueService.addIssue(issue).subscribe(() => this.getIssues());
   }
 
-  saveSelectedIssue(issue: Issue) {
-    issue.name = issue.name.trim();
-    if (!issue.name) return;
+  saveSelectedIssue(selectedIssue: Issue) {
+    selectedIssue.name = selectedIssue.name.trim();
+    if (!selectedIssue.name) return;
 
-    if (issue.id) {
-      this.issueService.updateIssue(issue).subscribe(() => this.getIssues());
+    if (selectedIssue.id) {
+      this.issueService
+        .updateIssue(selectedIssue)
+        .subscribe(() => this.getIssues());
     } else {
-      this.addIssue(issue);
+      this.addIssue(selectedIssue);
     }
   }
 
-  deleteSelectedIssue(issueId: number) {
-    this.issueService.deleteIssue(issueId).subscribe(() => {
-      this.getIssues();
+  deleteSelectedIssue(selectedIssue: Issue) {
+    const currentIssues = this.issues;
+    this._issues$.next(
+      this.issues.filter((issue) => issue.id !== selectedIssue.id)
+    );
+    this.issueService.deleteIssue(selectedIssue.id).subscribe({
+      error: (error: any) => {
+        console.log(error);
+        // TODO: Current method of rolling back state change leads to bugs if multiple state changes happen 
+        // before rolling back the first state change. Deleting issue might not be a good candidate for optimistic UI
+        this._issues$.next(currentIssues);
+      },
     });
   }
 }
