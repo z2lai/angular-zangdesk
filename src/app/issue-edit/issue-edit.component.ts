@@ -17,12 +17,12 @@ export class IssueEditComponent {
     console.log('IssueEdit Component Instantiated!');
   }
 
-  save(issue: Issue) {
-    this.saveIssue.emit(issue);
+  save() {
+    this.saveIssue.emit(this.issue);
   }
 
-  delete(issue: Issue) {
-    this.deleteIssue.emit(issue);
+  delete() {
+    this.deleteIssue.emit(this.issue);
   }
 
   ngOnInit() {

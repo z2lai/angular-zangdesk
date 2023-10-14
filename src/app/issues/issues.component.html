@@ -1,23 +1,34 @@
 <div>
   <!-- <zd-issue-search (searchEvent)="issues = $event"></zd-issue-search> -->
   <label for="issue-search">Search Issue:</label>
-  <input
+  <button
+    type="button"
+    class="btn btn-primary card-link"
+    title="add issue"
+    (click)="onAddIssue()"
+  >
+    New Issue
+  </button>
+  <!-- <input
     id="issue-search"
     type="text"
     #issueSearch
     (change)="getIssuesByName(issueSearch.value)"
   />
-  <label for="new-issue-name">New Issue Name:</label>
-  <!-- <input id="new-issue-name" type="text" #newIssueName />
-  <button type="button" (click)="addIssue(newIssueName.value)">Add</button> -->
-  <zd-issues-list [issues$]="issues$" [selectedIssueId]="selectedIssueId" (selectIssue)="onIssueSelect($event)">
+  <label for="new-issue-name">New Issue Name:</label> -->
+
+  <zd-issues-list
+    [issues$]="issues$"
+    [selectedIssueId]="selectedIssueId"
+    (selectIssue)="onIssueSelect($event)"
+  >
   </zd-issues-list>
-  <div style="text-align: center">selected Id: {{ selectedIssueId }}</div>
+
   <section *ngIf="selectedIssue$ | async as selectedIssue">
     <zd-issue-edit
       [issue]="selectedIssue"
-      (saveIssue)="saveSelectedIssue($event)"
-      (deleteIssue)="deleteSelectedIssue($event)"
+      (saveIssue)="onIssueSave($event)"
+      (deleteIssue)="onIssueDelete($event)"
     ></zd-issue-edit>
   </section>
 </div>

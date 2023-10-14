@@ -34,7 +34,7 @@ export class IssueService {
 
   updateIssue(updatedIssue: Issue): Observable<any> {
     return this.http.put<Issue>(this.issuesUrl, updatedIssue, this.httpOptions).pipe(
-      tap(_ => console.log(`updated Issue id=${updatedIssue.id}`)),
+      tap(issue => console.log(`updated Issue id=${updatedIssue.id}`, issue)),
       catchError(this.handleError<Issue>('updateIssue'))
     );
   }
