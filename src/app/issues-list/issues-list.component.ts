@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class IssuesListComponent {
   @Input() issues$!: Observable<Issue[]>;
-  @Input() selectedIssueId: number | undefined;
+  @Input() selectedIssueId?: number | null;
 
   @Output() selectIssue = new EventEmitter<Issue>;
 

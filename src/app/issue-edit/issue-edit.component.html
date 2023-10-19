@@ -4,11 +4,7 @@
     <h2>{{ issue.name }}</h2>
     <a routerLink="/issue/{{ issue.id }}">Details</a>
     <p class="card-text">
-      <input
-        type="text"
-        [(ngModel)]="issue.name"
-        placeholder="Name"
-      />
+      <input type="text" [(ngModel)]="issue.name" placeholder="Name" />
       <input
         type="text"
         [(ngModel)]="issue.description"
@@ -24,14 +20,30 @@
     >
       Delete
     </button>
-    <button
-      type="button"
-      class="btn btn-primary card-link"
-      title="delete issue"
-      (click)="save()"
-    >
-      {{ issue.id ? "Save" : "Add" }}
-    </button>
+
+    <ng-container *ngIf="issue.id; then saveButton; else addButton">
+    </ng-container>
+    <ng-template #saveButton>
+      <button
+        type="button"
+        class="btn btn-primary card-link"
+        title="delete issue"
+        (click)="save()"
+      >
+        Save
+      </button>
+    </ng-template>
+    <ng-template #addButton>
+      <button
+        type="button"
+        class="btn btn-primary card-link"
+        title="delete issue"
+        (click)="add()"
+      >
+        Add
+      </button>
+    </ng-template>
+
   </div>
   <div class="card-footer text-muted">Last Updated 2 days ago</div>
 </article>

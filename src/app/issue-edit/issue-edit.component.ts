@@ -12,6 +12,7 @@ export class IssueEditComponent {
 
   @Output() saveIssue = new EventEmitter<Issue>();
   @Output() deleteIssue = new EventEmitter<Issue>();
+  @Output() addNewIssue = new EventEmitter<Issue>();
   
   constructor() {
     console.log('IssueEdit Component Instantiated!');
@@ -23,6 +24,10 @@ export class IssueEditComponent {
 
   delete() {
     this.deleteIssue.emit(this.issue);
+  }
+
+  add() {
+    this.addNewIssue.emit(this.issue);
   }
 
   ngOnInit() {

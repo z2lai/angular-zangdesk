@@ -5,7 +5,7 @@
     type="button"
     class="btn btn-primary card-link"
     title="add issue"
-    (click)="onAddIssue()"
+    (click)="onNewIssueSelect()"
   >
     New Issue
   </button>
@@ -23,12 +23,13 @@
     (selectIssue)="onIssueSelect($event)"
   >
   </zd-issues-list>
-
+  <div>Selected Id: {{selectedIssueId}}</div>
   <section *ngIf="selectedIssue$ | async as selectedIssue">
     <zd-issue-edit
       [issue]="selectedIssue"
       (saveIssue)="onIssueSave($event)"
       (deleteIssue)="onIssueDelete($event)"
+      (addNewIssue)="onIssueAdd($event)"
     ></zd-issue-edit>
   </section>
 </div>
