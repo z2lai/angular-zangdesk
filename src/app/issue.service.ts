@@ -40,8 +40,10 @@ export class IssueService {
   }
 
   addIssue(newIssue: Issue): Observable<Issue> {
-    // Simulating 50 percent chance of throwing an error instead of calling the API
-    if (Math.random() >= 0.5) {
+    // Simulating 30 percent chance of throwing an error instead of calling the API
+    const roll = Math.random();
+    if (roll > 0.69) {
+      console.log(roll);
       return new Observable(function subscribe(subscriber) {
         setTimeout(() => {
           subscriber.error(
@@ -62,8 +64,10 @@ export class IssueService {
   }
 
   deleteIssue(id: number): Observable<Issue> {
-    // Simulating 50 percent chance of throwing an error instead of calling the API
-    if (Math.random() >= 0.5) {
+    // Simulating 30 percent chance of throwing an error instead of calling the API
+    const roll = Math.random();
+    if (roll > 0.69) {
+      console.log(roll);
       return new Observable(function subscribe(subscriber) {
         setTimeout(() => {
           subscriber.error(
