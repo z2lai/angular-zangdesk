@@ -20,16 +20,7 @@ import {
 export class IssuesComponent {
   private _issues$ = new BehaviorSubject<Issue[]>([]);
   public readonly issues$: Observable<Issue[]> = this._issues$.asObservable();
-  get issues() {
-    return this._issues$.getValue();
-  }
-
   private selectedIssueId$ = new BehaviorSubject<number | undefined>(undefined);
-  //TODO: Remove all getters and setters that hide the fact that they are accessing behaviour Subjects
-  // Is using getValue like below an anti-pattern? getter to retrieve selectedIssueId easily without having to subscribe to an observable
-  get selectedIssueId() {
-    return this.selectedIssueId$.getValue();
-  }
 
   //TODO: Separate this state service method out of this component
   //TODO: Separate new Issue() constructor into a Issue class with id=-1
@@ -40,7 +31,6 @@ export class IssuesComponent {
   } as Issue);
   public readonly newIssueToBeAdded$: Observable<Issue | undefined> =
     this._newIssueToBeAdded$.asObservable();
-
   //TODO: Separate this state service method out of this component
   public readonly selectedIssue$: Observable<Issue | undefined> =
     this.selectedIssueId$.pipe(
@@ -50,7 +40,8 @@ export class IssuesComponent {
         ([selectedIssueId, issues]: [number | undefined, Issue[]]):
           | Issue
           | undefined => {
-          if (selectedIssueId === -1) return this._newIssueToBeAdded$.getValue();
+          if (selectedIssueId === -1)
+            return this._newIssueToBeAdded$.getValue();
 
           const selectedIssue = issues.find(
             (issue: Issue) => issue.id === selectedIssueId,
@@ -66,6 +57,26 @@ export class IssuesComponent {
   //   this.newIssueToBeAdded$,
   //   this.selectedIssue$,
   // ).pipe(tap(issue => console.log('Issue Selected for Edit: ', issue)));
+
+  constructor(private issueService: IssueService) {
+    console.log('Component Instantiated!');
+  }
+
+  get issues() {
+    return this._issues$.getValue();
+  }
+
+  //TODO: Remove all getters and setters that hide the fact that they are accessing behaviour Subjects
+  // Is using getValue like below an anti-pattern? getter to retrieve selectedIssueId easily without having to subscribe to an observable
+  get selectedIssueId() {
+    return this.selectedIssueId$.getValue();
+  }
+
+  ngOnInit() {
+    this.getIssues();
+  }
+
+  /* Issues Service Methods */
 
   //TODO: Separate this state service method out of this component
   saveNewIssue(newIssueWithoutId: Issue) {
@@ -100,14 +111,6 @@ export class IssuesComponent {
     });
   }
 
-  constructor(private issueService: IssueService) {
-    console.log('Component Instantiated!');
-  }
-
-  ngOnInit() {
-    this.getIssues();
-  }
-
   getIssues() {
     this.issueService
       .getIssues()
@@ -135,6 +138,8 @@ export class IssuesComponent {
     //TODO: Implement this method to be called for any optimistic updates for addIssue or saveSelectedIssue to avoid waiting for API response
     // Can include logic to rollback optimistic update if API response returns error
   }
+
+  /* Component event handlers */
 
   onNewIssueSelect() {
     this.selectIssue(null);
