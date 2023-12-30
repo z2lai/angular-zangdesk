@@ -10,6 +10,7 @@ import {
   merge,
   tap,
 } from 'rxjs';
+import { deepClone } from '../utils/deepClone';
 
 @Component({
   selector: 'zd-issues',
@@ -19,18 +20,18 @@ import {
 })
 export class IssuesComponent {
   private _issues$ = new BehaviorSubject<Issue[]>([]);
-  public readonly issues$: Observable<Issue[]> = this._issues$.asObservable();
+  public readonly issues$: Observable<Issue[]> = this._issues$
+    .pipe(map(issues => deepClone(issues)));
   private selectedIssueId$ = new BehaviorSubject<number | undefined>(undefined);
-
   //TODO: Separate this state service method out of this component
-  //TODO: Separate new Issue() constructor into a Issue class with id=-1
-  // State variable to temporarily hold new issue (id=-1) being created with optimistic update.
+  //TODO: Separate new Issue() constructor into a Issue class with id=-1. Don't do this, use interfaces and service methods instead of types.
+  // State variable to temporarily store in-memory new issue (id=-1) being created with optimistic update.
   // Gets cleared once issue has been added to database, or API responds with error
-  private _newIssueToBeAdded$ = new BehaviorSubject<Issue>({
-    name: '',
-  } as Issue);
+  private _newIssueToBeAdded$ = new BehaviorSubject<Issue>({} as Issue);
   public readonly newIssueToBeAdded$: Observable<Issue | undefined> =
-    this._newIssueToBeAdded$.asObservable();
+    this._newIssueToBeAdded$
+      .pipe(map(issue => deepClone(issue)));
+
   //TODO: Separate this state service method out of this component
   public readonly selectedIssue$: Observable<Issue | undefined> =
     this.selectedIssueId$.pipe(
@@ -41,12 +42,11 @@ export class IssuesComponent {
           | Issue
           | undefined => {
           if (selectedIssueId === -1)
-            return this._newIssueToBeAdded$.getValue();
+            // TODO: Copying logic needs to be defined across the board in the state service for all state. How?
+            return this.getNewIssueToBeAdded();
 
-          const selectedIssue = issues.find(
-            (issue: Issue) => issue.id === selectedIssueId,
-          );
-          return selectedIssue ? { ...selectedIssue } : undefined;
+          const selectedIssue = issues.find((issue: Issue) => issue.id === selectedIssueId);
+          return selectedIssue ? selectedIssue : undefined;
         },
       ),
       tap(selectedIssue => console.log('Selected Issue:', selectedIssue)),
@@ -70,6 +70,10 @@ export class IssuesComponent {
   // Is using getValue like below an anti-pattern? getter to retrieve selectedIssueId easily without having to subscribe to an observable
   get selectedIssueId() {
     return this.selectedIssueId$.getValue();
+  }
+
+  private getNewIssueToBeAdded(): Issue {
+    return deepClone(this._newIssueToBeAdded$.getValue());
   }
 
   ngOnInit() {

@@ -8,6 +8,7 @@ import { Issue } from '../issue';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssueEditComponent {
+  //TODO: Implement input setter to break object references by cloning the object
   @Input() issue!: Issue;
 
   @Output() saveIssue = new EventEmitter<Issue>();
