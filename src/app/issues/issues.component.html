@@ -24,12 +24,12 @@
   >
   </zd-issues-list>
   <div>Selected Id: {{selectedIssueId}}</div>
-  <section *ngIf="selectedIssue$ | async as selectedIssue">
+  <section *ngIf="issueForEdit$ | async as issueForEdit">
     <zd-issue-edit
-      [issue]="selectedIssue"
+      [issue]="issueForEdit"
       (saveIssue)="onIssueSave($event)"
       (deleteIssue)="onIssueDelete($event)"
-      (addNewIssue)="onIssueAdd($event)"
+      (addNewIssue)="onNewIssueSave($event)"
     ></zd-issue-edit>
   </section>
 </div>

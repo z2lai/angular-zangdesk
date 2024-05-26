@@ -20,18 +20,17 @@ import { deepClone } from '../utils/deepClone';
 })
 export class IssuesComponent {
   private _issues$ = new BehaviorSubject<Issue[]>([]);
-  public readonly issues$: Observable<Issue[]> = this._issues$
-    .pipe(map(issues => deepClone(issues)));
+  public readonly issues$: Observable<Issue[]> = this._issues$.pipe(
+    map(issues => deepClone(issues)),
+  );
   private selectedIssueId$ = new BehaviorSubject<number | undefined>(undefined);
   //TODO: Separate this state service method out of this component
   //TODO: Separate new Issue() constructor into a Issue class with id=-1. Don't do this, use interfaces and service methods instead of types.
-  // State variable to temporarily store in-memory new issue (id=-1) being created with optimistic update.
-  // Gets cleared once issue has been added to database, or API responds with error
-  private _newIssueToBeAdded$ = new BehaviorSubject<Issue>({} as Issue);
-  public readonly newIssueToBeAdded$: Observable<Issue | undefined> =
-    this._newIssueToBeAdded$
-      .pipe(map(issue => deepClone(issue)));
-
+  // State variable to temporarily store in-memory new issue (id=-1) while it's being created with optimistic update to allow rollback.
+  // Gets cleared once issue has been added to database, or API responds with error (should be rolled back on error)?
+  private newIssue$ = new BehaviorSubject<Issue>({} as Issue);
+  // public readonly newIssueToBeAdded$: Observable<Issue | undefined> =
+  //   this._newIssueToBeAdded$.pipe(map(issue => deepClone(issue)));
   //TODO: Separate this state service method out of this component
   public readonly selectedIssue$: Observable<Issue | undefined> =
     this.selectedIssueId$.pipe(
@@ -41,40 +40,43 @@ export class IssuesComponent {
         ([selectedIssueId, issues]: [number | undefined, Issue[]]):
           | Issue
           | undefined => {
-          if (selectedIssueId === -1)
-            // TODO: Copying logic needs to be defined across the board in the state service for all state. How?
-            return this.getNewIssueToBeAdded();
-
-          const selectedIssue = issues.find((issue: Issue) => issue.id === selectedIssueId);
+          console.log('Issues', issues);
+          const selectedIssue = issues.find(
+            (issue: Issue) => issue.id === selectedIssueId,
+          );
           return selectedIssue ? selectedIssue : undefined;
         },
       ),
       tap(selectedIssue => console.log('Selected Issue:', selectedIssue)),
     );
 
+  // Approach 2: Leave selectedIssue as simple and merge in another Issue observable to determine the issue to be edited
   // // UI State Variable for Issue Edit component, leave this within component for now instead of creating facade class
-  // public readonly issueSelectedForEdit$: Observable<Issue | undefined> = merge(
-  //   this.newIssueToBeAdded$,
-  //   this.selectedIssue$,
-  // ).pipe(tap(issue => console.log('Issue Selected for Edit: ', issue)));
+  public readonly issueForEdit$: Observable<Issue | undefined> = merge(
+    this.newIssue$,
+    this.selectedIssue$,
+  ).pipe(
+    map(issue => issue ? issue : undefined),
+    tap(issue => console.log('Issue Selected for Edit: ', issue)),
+  );
 
   constructor(private issueService: IssueService) {
     console.log('Component Instantiated!');
   }
 
+  //TODO: Remove all getters and setters that hide the fact that they are accessing behaviour Subjects
+  // Is using getValue like below an anti-pattern? getter to retrieve selectedIssueId easily without having to subscribe to an observable
   get issues() {
     return this._issues$.getValue();
   }
 
-  //TODO: Remove all getters and setters that hide the fact that they are accessing behaviour Subjects
-  // Is using getValue like below an anti-pattern? getter to retrieve selectedIssueId easily without having to subscribe to an observable
   get selectedIssueId() {
     return this.selectedIssueId$.getValue();
   }
 
-  private getNewIssueToBeAdded(): Issue {
-    return deepClone(this._newIssueToBeAdded$.getValue());
-  }
+  // private getNewIssueToBeAdded(): Issue {
+  //   return deepClone(this.newIssueToBeAdded$.getValue());
+  // }
 
   ngOnInit() {
     this.getIssues();
@@ -91,7 +93,6 @@ export class IssuesComponent {
     // Note: selectedIssue$ only emits once despite the three simultaneous next() calls due to pipe(distinctUntilChanged())
     //TODO: Refactor below to methods that include cloning logic before calling .next()
     // Cloning objects should be done in in the state service so you don't have to worry about it everywhere else
-    this._newIssueToBeAdded$.next({ ...newIssueWithTempId });
     this._issues$.next([...this.issues, { ...newIssueWithTempId }]);
     this.selectIssue(newIssueWithTempId);
 
@@ -100,17 +101,15 @@ export class IssuesComponent {
     this.issueService.addIssue(newIssueWithoutId).subscribe({
       //TODO: Move replaceIssue and removeIssue logic to own methods in state service to encapsulate logic for finding temp id of -1
       next: issueWithId => {
-        this._newIssueToBeAdded$.next({ name: '' } as Issue);
         this._issues$.next([
           ...this.issues.map(issue => (issue.id === -1 ? issueWithId : issue)),
         ]);
-        this.selectIssue(issueWithId);
       },
       error: error => {
         console.log(error);
-        this._newIssueToBeAdded$.next({ ...newIssueWithoutId });
+        // This implementation makes the order of the next two calls important, is this bad practice?
         this._issues$.next([...this.issues.filter(issue => issue.id !== -1)]);
-        this.selectIssue(null);
+        this.newIssue$.next({ ...newIssueWithoutId });
       },
     });
   }
@@ -121,13 +120,17 @@ export class IssuesComponent {
       .subscribe(issues => this._issues$.next(issues));
   }
 
-  selectIssue(issue: Issue | null) {
-    this.selectedIssueId$.next(issue ? issue.id : -1);
+  selectIssue(issue: Issue) {
+    this.selectedIssueId$.next(issue.id);
   }
 
   updateIssue(issue: Issue) {
     //TODO: Avoid having to imperatively call getIssues in order to update local state, local state should be reactive
     this.issueService.updateIssue(issue).subscribe(() => this.getIssues());
+  }
+
+  addNewIssue() {
+    this.newIssue$.next({} as Issue);
   }
 
   // getIssuesByName(name: string) {
@@ -146,7 +149,7 @@ export class IssuesComponent {
   /* Component event handlers */
 
   onNewIssueSelect() {
-    this.selectIssue(null);
+    this.addNewIssue();
   }
 
   onIssueSelect(issue: Issue) {
@@ -164,7 +167,7 @@ export class IssuesComponent {
     this.updateIssue(issue);
   }
 
-  onIssueAdd(selectedIssue: Issue) {
+  onNewIssueSave(selectedIssue: Issue) {
     // Convert this to proper form validation to avoid duplication of logic here
     selectedIssue.name = selectedIssue.name.trim();
     if (!selectedIssue.name) return;
